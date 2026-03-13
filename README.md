@@ -1,10 +1,10 @@
 <h1 align="center">RAGEN: Training Agents by Reinforcing Reasoning</h1>
+<h3 align="center"><em>Diagnose agent failure modes. Make your RL training better.</em></h3>
 
 <p align="center"><img src="public/ragen_logo.jpeg" width="300px" alt="RAGEN icon" /></p>
 
 <p align="center">
-  <strong>RAGEN </strong>(<b>R</b>easoning <b>AGEN</b>t, pronounced like "Region") leverages reinforcement learning to train reasoning agents in interactive environments. <br>
-  <strong>RAGEN is a diagnostic platform to understand agent behavior in RL.</strong>
+  <strong>RAGEN</strong> (<b>R</b>easoning <b>AGEN</b>t, pronounced like "reagent") is a flexible RL framework for training reasoning agents in interactive environments — and a <strong>diagnostic platform to identify, understand, and fix agent failure modes during RL training</strong>.
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@
 
 ## About
 
-**RAGEN** (**R**easoning **AGEN**t, pronounced like "reagent") leverages reinforcement learning to train reasoning agents in interactive environments. **RAGEN is a diagnostic platform to understand agent behavior in RL.**
+**RAGEN** (**R**easoning **AGEN**t, pronounced like "reagent") is a flexible RL framework for training reasoning agents in interactive environments. Beyond training, RAGEN serves as a **diagnostic platform to identify and understand agent failure modes** — equipping practitioners with metrics and tools to see *why* training goes wrong and how to fix it.
 
 RAGEN is built around **StarPO** (**S**tate-**T**hinking-**A**ctions-**R**eward **P**olicy **O**ptimization), a unified RL framework for training multi-turn, trajectory-level agents with flexible control over reasoning processes, reward assignment mechanisms, and prompt-rollout structures.
 
@@ -130,12 +130,24 @@ SNR-Adaptive Filtering consistently improves training across algorithms, model s
 See the [Rollout Filtering Guide](docs/guide_rollout_filtering.md) for more filtering strategies (Top-k, linear mode, etc.).
 
 
-## Roadmap
+## Future Plans
 
-- [ ] Updated full documentation for <font color="#DC143C">RAGEN V2</font>
-- [ ] Expanded environment suite and multi-task benchmarks
-- [ ] Extended MI diagnostic visualizations in WandB dashboard
-- [ ] Multi-modal agent support (building on [VAGEN](https://github.com/RAGEN-AI/VAGEN))
+We are actively developing the next generation of RAGEN infrastructure and diagnostics, targeting a release in **late March 2026**.
+
+**Infrastructure**
+- [ ] **Async rollout engine** — decouple training and environment execution for higher throughput and better scalability
+- [ ] **HTTP-based environment interface** — allow training and environments to run in separate processes across machines
+- [ ] **Layered Env Wrapper** — modular wrapper design with separate environment layers
+- [ ] **Optional environment dependencies** — install only what you need for environments (e.g., `pip install ragen[webshop]`)
+
+**Diagnostics & Training Quality**
+- [ ] **Expanded benchmark suite** — additional environments to stress-test diagnostics across diverse, real-world agent tasks
+- [ ] **Extended MI diagnostic dashboard** — richer WandB visualizations for entropy, MI proxy, and gradient decomposition over training
+- [ ] **RL training metrics guide** — a practitioner's blog on how to read training signals (reward distribution, entropy, MI, gradient norms) and act on them before committing to a full run
+
+**Framework**
+- [ ] Update full documentation for <font color="#DC143C">RAGEN V2</font>
+- [ ] Multi-modal agent support (building upon [VAGEN](https://github.com/RAGEN-AI/VAGEN))
 - [ ] Public leaderboard for benchmark results
 
 
