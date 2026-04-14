@@ -80,9 +80,14 @@ def rollout_to_openai_format(item: Any, index: int) -> Dict[str, Any]:
     history = ntb.get('history', [])
     messages = extract_openai_messages(history)
 
-    # Extract metadata
-    rm_scores = item.batch.get('rm_scores') if item.batch else None
-    total_reward = float(np.sum(rm_scores)) if rm_scores is not None else 0.0
+    # Extract metadata - safe access to batch (avoid tensordict boolean conversion)
+    total_reward = 0.0
+    try:
+        if item.batch is not None and 'rm_scores' in item.batch:
+            rm_scores = item.batch['rm_scores']
+            total_reward = float(np.sum(rm_scores))
+    except (AttributeError, KeyError, TypeError):
+        pass
 
     metadata = {
         "env_id": int(ntb.get('env_ids', index)),
@@ -119,17 +124,19 @@ def convert_pkl_to_jsonl(input_path: Path, output_path: Path) -> None:
     total = len(data)
     print(f"Found {total} trajectories")
 
+    success_count = 0
     with open(output_path, 'w', encoding='utf-8') as f:
         for idx in range(total):
             try:
                 item = data[idx]
                 openai_obj = rollout_to_openai_format(item, idx)
                 f.write(json.dumps(openai_obj, ensure_ascii=False) + '\n')
+                success_count += 1
             except Exception as e:
                 print(f"Warning: Failed to convert trajectory {idx}: {e}")
                 continue
 
-    print(f"Successfully wrote {total} trajectories to {output_path}")
+    print(f"Successfully converted {success_count}/{total} trajectories to {output_path}")
 
 
 def parse_args() -> argparse.Namespace:

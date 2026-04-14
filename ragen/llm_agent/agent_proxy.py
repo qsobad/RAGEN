@@ -365,6 +365,7 @@ def _save_as_jsonl(rollouts: DataProto, save_path: str) -> None:
         return messages
 
     total = len(rollouts)
+    success_count = 0
     with open(save_path, 'w', encoding='utf-8') as f:
         for idx in range(total):
             try:
@@ -374,8 +375,14 @@ def _save_as_jsonl(rollouts: DataProto, save_path: str) -> None:
                 history = ntb.get('history', [])
                 messages = extract_openai_messages(history)
 
-                rm_scores = item.batch.get('rm_scores') if item.batch else None
-                total_reward = float(np.sum(rm_scores)) if rm_scores is not None else 0.0
+                # Safe access to batch (avoid tensordict boolean conversion)
+                total_reward = 0.0
+                try:
+                    if item.batch is not None and 'rm_scores' in item.batch:
+                        rm_scores = item.batch['rm_scores']
+                        total_reward = float(np.sum(rm_scores))
+                except (AttributeError, KeyError, TypeError):
+                    pass
 
                 metadata = {
                     "env_id": int(ntb.get('env_ids', idx)),
@@ -402,9 +409,12 @@ def _save_as_jsonl(rollouts: DataProto, save_path: str) -> None:
                 }
 
                 f.write(json.dumps(openai_obj, ensure_ascii=False) + '\n')
+                success_count += 1
             except Exception as e:
                 print(f"Warning: Failed to convert trajectory {idx}: {e}")
                 continue
+
+    print(f"Successfully converted {success_count}/{total} trajectories to JSONL")
 
 
 @hydra.main(version_base=None, config_path="../../config", config_name="eval")
